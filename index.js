@@ -13,7 +13,7 @@ AFRAME.registerComponent('oscsend', {
   schema: {
     serverURL: {default: 'localhost'},
     serverPort: {default: 8080},
-    messagePath: {default: '/'},
+    messagePath: {default: ''},
   },
 
   /**
@@ -45,7 +45,7 @@ AFRAME.registerComponent('oscsend', {
     var plugin = new OSC.WebsocketClientPlugin({host: this.data.serverURL, port: this.data.serverPort });
     osc = new OSC({ plugin: plugin });
     this.initOscListeners();
-    osc.open();
+    osc.open();    
    },
 
   /**
@@ -77,16 +77,19 @@ AFRAME.registerComponent('oscsend', {
  
   //TODO: investigate AFRAME.utils.throttleTick for use here
   //TODO: reuse message object instead of creating new instance
-  //TODO: do not use JSON.stringify()
   tick: function () {
     if (osc.status() !== OSC.STATUS.IS_OPEN) {
       return;
     }
     var el = this.el;
+
     var rotation = el.getAttribute('rotation');
-    var position = el.getAttribute('position');
+    const rotationMessage = new OSC.Message([this.data.messagePath, 'rotation'], rotation.x, rotation.y, rotation.z);
     
-    const message = new OSC.Message(this.data.messagePath, JSON.stringify(rotation), JSON.stringify(position));
-    osc.send(message);
-  }
+    var position = el.getAttribute('position');
+    const positionMessage = new OSC.Message([this.data.messagePath, 'position'], position.x, position.y, position.z);
+
+    const bundle = new OSC.Bundle(rotationMessage, positionMessage);
+    osc.send(bundle);
+  },
 });

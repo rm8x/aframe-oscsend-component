@@ -14,7 +14,7 @@ Using [osc-js](https://github.com/adzialocha/osc-js/wiki/PureData-&-MaxMSP).
 | ----------- | ----------------------------------- | ------------- |
 | serverURL   | Path to a websocket server          | localhost     |
 | serverPort  | Port of websocket server            | 8080          |
-| messagePath | Send OSC messages with this address | /             |
+| messagePath | Send OSC messages with this address | ''            |
 
 ### Installation and Usage
 
