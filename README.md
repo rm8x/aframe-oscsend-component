@@ -38,7 +38,7 @@ Install and use by directly including the [browser files](dist):
         oscsend="
         serverURL: localhost;
         serverPort: 8080;
-        messagePath: /aframe;
+        messagePath: aframe;
         ">
       <a-animation attribute="rotation"
         dur="05000"
