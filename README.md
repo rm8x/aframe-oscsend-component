@@ -6,14 +6,20 @@
 Sends OSC messages over a websocket connection.
 
 For [A-Frame](https://aframe.io).
+Using [osc-js](https://github.com/adzialocha/osc-js/wiki/PureData-&-MaxMSP).
 
 ### API
 
-| Property | Description | Default Value |
-| -------- | ----------- | ------------- |
-|          |             |               |
+| Property    | Description                         | Default Value |
+| ----------- | ----------------------------------- | ------------- |
+| serverURL   | Path to a websocket server          | localhost     |
+| serverPort  | Port of websocket server            | 8080          |
+| messagePath | Send OSC messages with this address | /             |
 
-### Installation
+### Installation and Usage
+
+In order to send messages over UDP you need to connect via WebSocket to a bridge server that will
+forward forward the messages it recieves. Follow this example using [osc-js](https://github.com/adzialocha/osc-js/wiki/PureData-&-MaxMSP). 
 
 #### Browser
 
@@ -28,7 +34,26 @@ Install and use by directly including the [browser files](dist):
 
 <body>
   <a-scene>
-    <a-entity oscsend="foo: bar"></a-entity>
+    <a-entity geometry="box" position="0 1 -2"
+        oscsend="
+        serverURL: localhost;
+        serverPort: 8080;
+        messagePath: /aframe;
+        ">
+      <a-animation attribute="rotation"
+        dur="05000"
+        direction="alternate-reverse"        
+        fill="forwards"
+        to="0 360 0"
+        repeat="indefinite">
+      </a-animation>
+      <a-animation attribute="position"
+        dur="10000"
+        direction="alternate-reverse"
+        to="0 3 -3"
+        repeat="indefinite">
+      </a-animation>
+    </a-entity>
   </a-scene>
 </body>
 ```
@@ -58,3 +83,9 @@ Then require and use.
 require('aframe');
 require('aframe-oscsend-component');
 ```
+### TODO
+* Allow users to specify which attributes to send
+* Send attributes in a sensibly structured message
+* Reconnect behavior
+* Care deeply about performance (see TODOs on tick function)
+* Demos
