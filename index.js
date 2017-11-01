@@ -25,14 +25,8 @@ AFRAME.registerComponent('oscsend', {
    * Initialize OSC event listeners.
    */
   initOscListeners: function () {
-    // osc.on('/response', (message) => {
-    //   console.log('response from test', message.args)
-    // });
-    
-  osc.on('open', () => {
+    osc.on('open', () => {
       console.log('osc connection open');
-      // const message = new OSC.Message('/test', 'hello');
-      // osc.send(message);
     });
     
     osc.on('close', () => {
@@ -91,10 +85,8 @@ AFRAME.registerComponent('oscsend', {
     var el = this.el;
     var rotation = el.getAttribute('rotation');
     var position = el.getAttribute('position');
-    //console.log('rotation: ', rotation, " position: ", position);
     
     const message = new OSC.Message(this.data.messagePath, JSON.stringify(rotation), JSON.stringify(position));
-    //console.log('msg: ', message);
     osc.send(message);
   }
 });
