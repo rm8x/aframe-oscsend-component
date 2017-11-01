@@ -38,13 +38,31 @@ AFRAME.registerComponent('oscsend', {
     });
   },
 
+  messages: {
+    positionMessage: new OSC.Message(['{replaceme}', 'position']),
+    rotationMessage: new OSC.Message(['{replaceme}', 'rotation']),
+  },
+
+  initReusedMessages: function () {
+    for(v in this.messages) {
+      this.messages[v].address = this.messages[v].address.replace('{replaceme}', this.data.messagePath || '');
+      this.messages[v].types = 'fff';
+      this.messages[v].args.push(0, 0, 0);
+    }
+  },
+
   /**
    * Called once when component is attached. Generally for initial setup.
    */
   init: function () {
+    this.initReusedMessages = AFRAME.utils.bind(this.initReusedMessages, this);
+    this.updateMessageArgs = AFRAME.utils.bind(this.updateMessageArgs, this);
+
     var plugin = new OSC.WebsocketClientPlugin({host: this.data.serverURL, port: this.data.serverPort });
     osc = new OSC({ plugin: plugin });
+
     this.initOscListeners();
+    this.initReusedMessages();
     osc.open();    
    },
 
@@ -76,20 +94,20 @@ AFRAME.registerComponent('oscsend', {
   play: function () { },
  
   //TODO: investigate AFRAME.utils.throttleTick for use here
-  //TODO: reuse message object instead of creating new instance
   tick: function () {
     if (osc.status() !== OSC.STATUS.IS_OPEN) {
       return;
     }
     var el = this.el;
-
-    var rotation = el.getAttribute('rotation');
-    const rotationMessage = new OSC.Message([this.data.messagePath, 'rotation'], rotation.x, rotation.y, rotation.z);
-    
-    var position = el.getAttribute('position');
-    const positionMessage = new OSC.Message([this.data.messagePath, 'position'], position.x, position.y, position.z);
-
-    const bundle = new OSC.Bundle(rotationMessage, positionMessage);
-    osc.send(bundle);
+    this.updateMessageArgs(this.messages.rotationMessage, el.getAttribute('rotation'));
+    this.updateMessageArgs(this.messages.positionMessage, el.getAttribute('position'));
+    osc.send(this.messages.rotationMessage);
+    osc.send(this.messages.positionMessage);
   },
+
+  updateMessageArgs: function(message, xyzElAttribute) {
+    message.args[0] = xyzElAttribute.x;
+    message.args[1] = xyzElAttribute.y;
+    message.args[2] = xyzElAttribute.z;
+  }
 });
