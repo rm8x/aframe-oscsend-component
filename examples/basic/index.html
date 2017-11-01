@@ -11,12 +11,27 @@
   </head>
   <body>
     <a-scene environment="preset: forest">
-      <a-entity geometry="box" oscsend="">
-        <a-animation attribute="rotation"
-        dur="10000"
+      <a-entity id="spinningBox"
+        position="0 1 -2"
+        geometry="box"
+        oscsend="
+        serverURL: localhost;
+        serverPort: 8080;
+        messagePath: /aframe;
+        ">
+      <a-animation attribute="rotation"
+        dur="05000"
+        direction="alternate-reverse"        
         fill="forwards"
         to="0 360 0"
-        repeat="indefinite"></a-animation>
+        repeat="indefinite">
+      </a-animation>
+      <a-animation attribute="position"
+        dur="10000"
+        direction="alternate-reverse"
+        to="0 3 -3"
+        repeat="indefinite">
+      </a-animation>
     </a-entity>
     </a-scene>
 
