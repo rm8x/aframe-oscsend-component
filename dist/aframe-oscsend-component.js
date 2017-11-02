@@ -59,7 +59,7 @@
 	  schema: {
 	    serverURL: {default: 'localhost'},
 	    serverPort: {default: 8080},
-	    messagePath: {default: '/'},
+	    messagePath: {default: ''},
 	  },
 
 	  /**
@@ -71,14 +71,8 @@
 	   * Initialize OSC event listeners.
 	   */
 	  initOscListeners: function () {
-	    // osc.on('/response', (message) => {
-	    //   console.log('response from test', message.args)
-	    // });
-	    
-	  osc.on('open', () => {
+	    osc.on('open', () => {
 	      console.log('osc connection open');
-	      // const message = new OSC.Message('/test', 'hello');
-	      // osc.send(message);
 	    });
 	    
 	    osc.on('close', () => {
@@ -90,14 +84,32 @@
 	    });
 	  },
 
+	  messages: {
+	    positionMessage: new OSC.Message(['{replaceme}', 'position']),
+	    rotationMessage: new OSC.Message(['{replaceme}', 'rotation']),
+	  },
+
+	  initReusedMessages: function () {
+	    for(v in this.messages) {
+	      this.messages[v].address = this.messages[v].address.replace('{replaceme}', this.data.messagePath || '');
+	      this.messages[v].types = 'fff';
+	      this.messages[v].args.push(0, 0, 0);
+	    }
+	  },
+
 	  /**
 	   * Called once when component is attached. Generally for initial setup.
 	   */
 	  init: function () {
+	    this.initReusedMessages = AFRAME.utils.bind(this.initReusedMessages, this);
+	    this.updateMessageArgs = AFRAME.utils.bind(this.updateMessageArgs, this);
+
 	    var plugin = new OSC.WebsocketClientPlugin({host: this.data.serverURL, port: this.data.serverPort });
 	    osc = new OSC({ plugin: plugin });
+
 	    this.initOscListeners();
-	    osc.open();
+	    this.initReusedMessages();
+	    osc.open();    
 	   },
 
 	  /**
@@ -128,20 +140,21 @@
 	  play: function () { },
 	 
 	  //TODO: investigate AFRAME.utils.throttleTick for use here
-	  //TODO: reuse message object instead of creating new instance
-	  //TODO: do not use JSON.stringify()
 	  tick: function () {
 	    if (osc.status() !== OSC.STATUS.IS_OPEN) {
 	      return;
 	    }
 	    var el = this.el;
-	    var rotation = el.getAttribute('rotation');
-	    var position = el.getAttribute('position');
-	    //console.log('rotation: ', rotation, " position: ", position);
-	    
-	    const message = new OSC.Message(this.data.messagePath, JSON.stringify(rotation), JSON.stringify(position));
-	    //console.log('msg: ', message);
-	    osc.send(message);
+	    this.updateMessageArgs(this.messages.rotationMessage, el.getAttribute('rotation'));
+	    this.updateMessageArgs(this.messages.positionMessage, el.getAttribute('position'));
+	    osc.send(this.messages.rotationMessage);
+	    osc.send(this.messages.positionMessage);
+	  },
+
+	  updateMessageArgs: function(message, xyzElAttribute) {
+	    message.args[0] = xyzElAttribute.x;
+	    message.args[1] = xyzElAttribute.y;
+	    message.args[2] = xyzElAttribute.z;
 	  }
 	});
 
