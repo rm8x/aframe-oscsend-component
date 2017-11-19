@@ -116,7 +116,7 @@ AFRAME.registerComponent('oscsend', {
   },
 
   initReusedMessages: function initReusedMessages() {
-    for (v in this.messages) {
+    for (var v in this.messages) {
       this.messages[v].address = this.messages[v].address.replace('{replaceme}', this.data.messagePath || '');
       this.messages[v].types = 'fff';
       this.messages[v].args.push(0, 0, 0);
