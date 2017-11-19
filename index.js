@@ -58,12 +58,11 @@ AFRAME.registerComponent('oscsend', {
     this.initReusedMessages = AFRAME.utils.bind(this.initReusedMessages, this);
     this.updateMessageArgs = AFRAME.utils.bind(this.updateMessageArgs, this);
 
-    var plugin = new OSC.WebsocketClientPlugin({host: this.data.serverURL, port: this.data.serverPort });
-    osc = new OSC({ plugin: plugin });
+    osc = new OSC(); // defaults to WebsocketClientPlugin
 
     this.initOscListeners();
     this.initReusedMessages();
-    osc.open();    
+    osc.open({host: this.data.serverURL, port: this.data.serverPort });
    },
 
   /**
