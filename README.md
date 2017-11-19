@@ -21,6 +21,10 @@ Using [osc-js](https://github.com/adzialocha/osc-js/wiki/PureData-&-MaxMSP).
 In order to send messages over UDP you need to connect via WebSocket to a bridge server that will
 forward forward the messages it recieves. Follow this example using [osc-js](https://github.com/adzialocha/osc-js/wiki/PureData-&-MaxMSP). 
 
+### Example on ghpages
+
+[https://rm8x.github.io/aframe-oscsend-component/](https://rm8x.github.io/aframe-oscsend-component/)
+
 #### Browser
 
 Install and use by directly including the [browser files](dist):
