@@ -28,7 +28,8 @@ Install and use by directly including the [browser files](dist):
 ```html
 <head>
   <title>My A-Frame Scene</title>
-  <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+  <script src="https://rawgit.com/adzialocha/osc-js/master/dist/osc.min.js"></script>        
   <script src="https://unpkg.com/aframe-oscsend-component/dist/aframe-oscsend-component.min.js"></script>
 </head>
 
@@ -85,7 +86,6 @@ require('aframe-oscsend-component');
 ```
 ### TODO
 * Allow users to specify which attributes to send
-* Send attributes in a sensibly structured message
 * Reconnect behavior
-* Care deeply about performance (see TODOs on tick function)
+* Care deeply about performance
 * Demos
