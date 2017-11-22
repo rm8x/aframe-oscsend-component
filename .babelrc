@@ -6,7 +6,7 @@
           "uglify": true
         },
         "include": ["transform-es2015-arrow-functions"],
-        "debug": true
+        "debug": false
       }]
     ]
   }
