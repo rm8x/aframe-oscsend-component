@@ -8,12 +8,17 @@ module.exports = {
         rules: [
         {
             test: /\.(js|jsx)$/,
-            exclude: /(node_modules)/,
+            exclude: /(node_modules|bower_components)/,
             use: {
                 loader: 'babel-loader',
-                options: {
-                    presets: ['env']
-                }
+                query: {
+                    presets: ["env", "stage-0"],
+                    babelrc: false,
+                },
+                // options: {
+                //     //presets: ['env'],
+                //     babelrc: false,
+                // }
             }
         }
     ]
