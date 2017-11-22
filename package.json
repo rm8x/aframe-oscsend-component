@@ -6,7 +6,7 @@
   "unpkg": "dist/aframe-oscsend-component.min.js",
   "scripts": {
     "dev": "budo index.js:dist/aframe-oscsend-component.min.js --port 7000 --live --open",
-    "dist": "webpack index.js dist/aframe-oscsend-component.js && webpack -p --config webpack.config.js index.js dist/aframe-oscsend-component.min.js ",
+    "dist": "webpack index.js dist/aframe-oscsend-component.js && webpack -p index.js dist/aframe-oscsend-component.min.js ",
     "lint": "semistandard -v | snazzy",
     "prepublish": "npm run dist",
     "ghpages": "ghpages",
@@ -43,6 +43,7 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-latest": "^6.24.1",
     "browserify": "^13.0.0",
     "budo": "^8.2.2",
     "chai": "^3.4.1",

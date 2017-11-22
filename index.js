@@ -1,4 +1,6 @@
-var OSC = window.OSC;
+//var OSC = window.OSC;
+//import OSC from 'osc-js';
+const OSC = require('osc-js');
 var osc = '';
 
 /* global AFRAME */
@@ -6,6 +8,9 @@ if (typeof AFRAME === 'undefined') {
   throw new Error('Component attempted to register before AFRAME was available.');
 }
 
+if (typeof OSC === 'undefined') {
+  console.log('OSC is undefined at load');
+}
 /**
  * OSCtest component for A-Frame.
  */
@@ -25,6 +30,7 @@ AFRAME.registerComponent('oscsend', {
    * Initialize OSC event listeners.
    */
   initOscListeners: function () {
+    
     osc.on('open', () => {
       console.log('osc connection open');
     });
@@ -38,7 +44,7 @@ AFRAME.registerComponent('oscsend', {
     });
   },
 
-  messages: {
+  messages: (typeof OSC === 'undefined')? {} : {
     positionMessage: new OSC.Message(['{replaceme}', 'position']),
     rotationMessage: new OSC.Message(['{replaceme}', 'rotation']),
   },

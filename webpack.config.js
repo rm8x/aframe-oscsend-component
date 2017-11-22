@@ -1,4 +1,9 @@
 module.exports = {
+    resolve: {
+        alias: {
+          'osc-js': './node_modules/osc-js/lib/osc.browser.js',
+        },
+    },
     module: {
         rules: [
         {
@@ -11,6 +16,6 @@ module.exports = {
                 }
             }
         }
-        ]
-    }
+    ]
+}
 }

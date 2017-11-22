@@ -1,5 +1,12 @@
 {
     "presets": [
-        ["env", { "targets": { "node": "current" } }]
+      ["env", {
+        "targets": {
+          "browsers": ["last 2 versions"],
+          "uglify": true
+        },
+        "include": ["transform-es2015-arrow-functions"],
+        "debug": true
+      }]
     ]
-}
+  }
