@@ -1,5 +1,5 @@
 var OSC = window.OSC;
-var osc = '';
+//var osc = '';
 
 /* global AFRAME */
 if (typeof AFRAME === 'undefined') {
@@ -13,6 +13,7 @@ AFRAME.registerComponent('oscsend', {
   schema: {
     serverURL: {default: 'localhost'},
     serverPort: {default: 8080},
+    useWss: {default: false},
     messagePath: {default: ''},
   },
 
@@ -25,15 +26,15 @@ AFRAME.registerComponent('oscsend', {
    * Initialize OSC event listeners.
    */
   initOscListeners: function () {
-    osc.on('open', () => {
+    this.osc.on('open', () => {
       console.log('osc connection open');
     });
     
-    osc.on('close', () => {
+    this.osc.on('close', () => {
       console.log('osc connection closed');
     });
     
-    osc.on('error', (err) => {
+    this.osc.on('error', (err) => {
       console.log('osc error', err);
     });
   },
@@ -57,14 +58,20 @@ AFRAME.registerComponent('oscsend', {
   init: function () {
     this.initReusedMessages = AFRAME.utils.bind(this.initReusedMessages, this);
     this.updateMessageArgs = AFRAME.utils.bind(this.updateMessageArgs, this);
+    this.initOscListeners = AFRAME.utils.bind(this.initOscListeners, this);
+    //osc = new OSC(); // defaults to WebsocketClientPlugin
 
-    osc = new OSC(); // defaults to WebsocketClientPlugin
+    // const plugin = new OSC.WebsocketBrowserPlugin({ port: 9001 })
+    // const osc = new OSC({ plugin: plugin })
 
     this.initOscListeners();
     this.initReusedMessages();
-    osc.open({host: this.data.serverURL, port: this.data.serverPort });
+    this.osc.open({host: this.data.serverURL, port: this.data.serverPort });    
    },
 
+   osc: new OSC({ plugin: new OSC.WebsocketBrowserPlugin({secure: true}) }),
+   
+   //osc: new OSC({ plugin: new OSC.WebsocketBrowserPlugin({ port: 9001 }) }),
   /**
    * Called when component is attached and when component data changes.
    * Generally modifies the entity based on the data.
@@ -94,14 +101,14 @@ AFRAME.registerComponent('oscsend', {
  
   //TODO: investigate AFRAME.utils.throttleTick for use here
   tick: function () {
-    if (osc.status() !== OSC.STATUS.IS_OPEN) {
+    if (this.osc.status() !== OSC.STATUS.IS_OPEN) {
       return;
     }
     var el = this.el;
     this.updateMessageArgs(this.messages.rotationMessage, el.getAttribute('rotation'));
     this.updateMessageArgs(this.messages.positionMessage, el.getAttribute('position'));
-    osc.send(this.messages.rotationMessage);
-    osc.send(this.messages.positionMessage);
+    this.osc.send(this.messages.rotationMessage);
+    this.osc.send(this.messages.positionMessage);
   },
 
   updateMessageArgs: function(message, xyzElAttribute) {
